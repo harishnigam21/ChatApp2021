@@ -3,6 +3,7 @@ configDotenv();
 
 export const envList = {
   PORT: process.env.PORT,
+  SECURE: process.env.SECURE,
   BACKEND_HOST: process.env.BACKEND_HOST,
   FRONTEND_HOST: process.env.FRONTEND_HOST,
   ACCESS_TOKEN_KEY: process.env.ACCESS_TOKEN_KEY,

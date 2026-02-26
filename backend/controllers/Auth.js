@@ -37,6 +37,7 @@ export const SignIn = async (req, res) => {
       .select("-createdAt -updatedAt -__v")
       .lean();
     res.cookie("jwt", refresh_token, {
+      secure: envList.SECURE || true,
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
