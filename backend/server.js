@@ -53,3 +53,4 @@ app.get("/", (req, res) =>
 server.listen(PORT, () =>
   console.log(`Backend Server is running at PORT No.-->> ${PORT}`),
 );
+export default server;
