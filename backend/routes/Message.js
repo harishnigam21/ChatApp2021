@@ -1,0 +1,18 @@
+import express from "express";
+import {
+  getRelativeMessages,
+  getRelativeUsers,
+  markSeen,
+  sendMessage,
+} from "../controllers/Message.js";
+import jwtVerifier from "../middlewares/jwt/jwtVerifier.js";
+import ValidateID from "../middlewares/validations/mongooseIDValidation.js";
+import { MessageValidation } from "../middlewares/validations/Message.js";
+const router = express.Router();
+router.route("/relative").get(jwtVerifier, getRelativeUsers);
+router.route("/relative/:id").get(ValidateID, jwtVerifier, getRelativeMessages);
+router
+  .route("/to/:id")
+  .post(ValidateID, jwtVerifier, MessageValidation, sendMessage);
+router.route("/mark/:id").patch(ValidateID, jwtVerifier, markSeen);
+export default router;

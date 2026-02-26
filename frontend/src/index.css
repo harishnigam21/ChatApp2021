@@ -1,0 +1,177 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+@import "tailwindcss";
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+:root {
+  font-family:
+    "Outfit",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.noscrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+#root::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+@layer components {
+  .spinner {
+    @apply w-5 h-5 aspect-square rounded-full border-4 animate-[spin_0.3s_linear_infinite];
+    @apply border-l-primary border-r-secondary border-b-tertiary border-t-transparent;
+  }
+}
+@theme {
+  /* --- Light Mode  --- */
+  --color-bgprimary: #ffffff;
+  --color-bgsecondary: #666666;
+  --color-primary: #1aa4f8;
+  --color-secondary: #91c978;
+  --color-tertiary: #e4d12e;
+  --color-border: #e5e7eb;
+  --color-text: #0f0f0f;
+  --color-txlight: #666666;
+}
+@media (prefers-color-scheme: dark) {
+  /* ---Dark Mode --- */
+  :root:not(.light):not(.dark) {
+    --color-bgprimary: #0f0f0f;
+    --color-bgsecondary: #666666;
+    --color-primary: #1aa4f8;
+    --color-secondary: #91c978;
+    --color-tertiary: #e4d12e;
+    --color-border: #d1d5db;
+    --color-text: white;
+    --color-txlight: #aaaaaa;
+  }
+}
+.dark {
+  --color-bgprimary: #0f0f0f;
+  --color-bgsecondary: #666666;
+  --color-primary: #1aa4f8;
+  --color-secondary: #91c978;
+  --color-tertiary: #e4d12e;
+  --color-border: #222222;
+  --color-text: white;
+  --color-txlight: #aaaaaa;
+}
+
+.light {
+  --color-bgprimary: #ffffff;
+  --color-bgsecondary: #666666;
+  --color-primary: #1aa4f8;
+  --color-secondary: #91c978;
+  --color-tertiary: #e4d12e;
+  --color-border: #d1d5db;
+  --color-text: #0f0f0f;
+  --color-txlight: #666666;
+}
+
+.myNav {
+  #second {
+    display: none;
+  }
+  #first,
+  #second {
+    position: absolute;
+    width: 100%;
+  }
+  #first {
+    transform: rotate(45deg);
+  }
+  #third {
+    transform: rotate(-45deg);
+  }
+}
+
+button {
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 75%;
+  cursor: none;
+}
+/* scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
+
+/* animations */
+@keyframes scrollPointVertical {
+  0% {
+    transform: translateY(60px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* BouncingLoading */
+.bouncing-loader {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: bounce 0.6s infinite alternate;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.dot:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.dot:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-10px);
+  }
+}
