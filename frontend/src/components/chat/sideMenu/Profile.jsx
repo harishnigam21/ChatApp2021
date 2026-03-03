@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { media } from "../../../assets/data/media";
 import { useEffect, useRef, useState } from "react";
 import readMedia from "../../../utils/read";
@@ -8,6 +8,7 @@ import { setUser } from "../../../redux/slices/UserSlice";
 import toast from "react-hot-toast";
 export default function Profile({ setToShow }) {
   const { sendRequest, loading } = useApi();
+  const dispatch = useDispatch();
   const currUser = useSelector((store) => store.user.userInfo);
   const [user, setUsr] = useState({
     name: currUser.name,
@@ -19,7 +20,6 @@ export default function Profile({ setToShow }) {
   const [save, setSave] = useState(false);
   const nameRef = useRef(null);
   const bioRef = useRef(null);
-
   useEffect(() => {
     if (
       user.name == currUser.name &&
@@ -66,7 +66,7 @@ export default function Profile({ setToShow }) {
       (result) => {
         if (result && result.success) {
           setSave(false);
-          setUser({ data: result.data.data });
+          dispatch(setUser({ data: result.data.data }));
           toast.success(result?.data?.message);
         } else {
           const errorMessage =
@@ -78,11 +78,11 @@ export default function Profile({ setToShow }) {
   };
   return (
     <section className="relative flex flex-col w-full h-full bg-bgprimary/50 text-text overflow-x-hidden overscroll-y-auto">
-      <div className="m-auto absolute top-2 left-2 cursor-pointer">
-        <media.BsChevronCompactLeft
-          className="text-2xl"
-          onClick={() => setToShow(null)}
-        />
+      <div
+        className="m-auto absolute top-2 left-2 rounded-full p-2 bg-bgprimary border border-border/20 text-text cursor-pointer z-1"
+        onClick={() => setToShow(null)}
+      >
+        <media.BsChevronCompactLeft className="text-2xl" />
       </div>
       <article className="relative w-full flex flex-col gap-4">
         <article
@@ -139,7 +139,7 @@ export default function Profile({ setToShow }) {
           </div>
         </article>
         <article className="flex flex-col gap-4 p-4">
-          <div className="flex self-center-safe relative px-5">
+          <div className="flex self-center-safe relative px-5 max-w-full">
             <input
               ref={nameRef}
               type="text"
@@ -166,7 +166,7 @@ export default function Profile({ setToShow }) {
               }}
             />
           </div>
-          <div className="flex self-center-safe relative px-5">
+          <div className="flex self-center-safe relative px-5 max-w-full">
             <input
               ref={bioRef}
               type="text"
@@ -193,137 +193,18 @@ export default function Profile({ setToShow }) {
               }}
             />
           </div>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim quos
-            sit, deserunt iusto reiciendis officia magni perferendis consectetur
-            laborum repellendus omnis. Ratione, eligendi porro numquam
-            perferendis blanditiis ullam doloremque ipsam.
-          </p>
         </article>
-        {save && (
-          <button
-            disabled={!save}
-            className="sticky bottom-2 self-end-safe px-4 py-1 rounded-full bg-primary flex gap-2 items-center"
-            onClick={handleProfileChange}
-          >
-            Save {loading && <p className="spinner"></p>}
-          </button>
-        )}
+        <hr className="w-full border border-border/20" />
       </article>
+      {save && (
+        <button
+          disabled={!save}
+          className="sticky bottom-2 right-2 self-end-safe m-4 px-4 py-1 rounded-full bg-primary flex gap-2 items-center"
+          onClick={handleProfileChange}
+        >
+          Save {loading && <p className="spinner"></p>}
+        </button>
+      )}
     </section>
   );
 }
