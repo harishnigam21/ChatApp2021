@@ -34,6 +34,9 @@ const useApi = () => {
         case 500:
           navigate("/msg/server-error", { replace: true });
           break;
+        case 503:
+          navigate("/msg/no-internet", { replace: true });
+          break;
         default:
           break;
       }
@@ -98,6 +101,12 @@ const useApi = () => {
         setData(result);
         return { success: true, data: result, status: response.status };
       } catch (err) {
+        if (err.code === "ECONNREFUSED" || err.code === "ETIMEDOUT") {
+          const internalErrorStatus = 503;
+          setStatus(internalErrorStatus);
+          setError(err.message || "No Internet Connection");
+          toast.error("No Internet Connection");
+        }
         console.error("API Error Caught:", err.message);
         const internalErrorStatus = 500;
         setStatus(internalErrorStatus);

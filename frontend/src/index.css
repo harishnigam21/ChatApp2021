@@ -17,15 +17,17 @@
   -moz-osx-font-smoothing: grayscale;
 }
 html,
-body,
-#root {
-  height: 100%;
+body {
   width: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  width: 100%;
   position: relative;
-  background: transparent;
   z-index: 1;
+  /* Removed height: 100% and overflow-y: auto */
 }
 .noscrollbar::-webkit-scrollbar {
   width: 0;
@@ -145,7 +147,14 @@ button:disabled {
     transform: translateY(0);
   }
 }
-
+@keyframes expand {
+  0% {
+    transform: translateX(100px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
 /* BouncingLoading */
 .bouncing-loader {
   display: flex;

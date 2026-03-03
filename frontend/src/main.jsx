@@ -18,6 +18,9 @@ const NotFound = lazy(
 const Refresh = lazy(
   () => import("./components/User_friendly_Error/Refresh.jsx"),
 );
+const NoInternet = lazy(
+  () => import("./components/User_friendly_Error/NoInternet.jsx"),
+);
 const BadRequest = lazy(
   () => import("./components/User_friendly_Error/BadRequest.jsx"),
 );
@@ -122,10 +125,17 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "msg/no-internet",
+    element: (
+      <Suspense fallback={<LazyLoader />}>
+        <NoInternet />
+      </Suspense>
+    ),
+  },
+  {
     path: "*",
     element: <NotFound />,
   },
-  
 ]);
 createRoot(document.getElementById("root")).render(
   <Provider store={Store}>
