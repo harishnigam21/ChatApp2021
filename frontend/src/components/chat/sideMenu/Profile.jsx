@@ -21,16 +21,6 @@ export default function Profile({ setToShow }) {
   const bioRef = useRef(null);
 
   useEffect(() => {
-    const getKey = async () => {
-      if (user.banner) {
-        console.log(user.banner.type);
-        console.log(user.banner.size);
-      }
-    };
-    getKey();
-  }, [user]);
-
-  useEffect(() => {
     if (
       user.name == currUser.name &&
       user.pic == currUser.pic &&
@@ -46,8 +36,14 @@ export default function Profile({ setToShow }) {
   const Validation = () => {
     const { pic, bio, name, banner } = user;
     if (validateInput("name", name)) return false;
-    if (pic && validateInput("image", pic, "pic")) return false;
-    if (banner && validateInput("image", banner, "banner")) return false;
+    if (pic && pic instanceof File && validateInput("image", pic, "pic"))
+      return false;
+    if (
+      banner &&
+      banner instanceof File &&
+      validateInput("image", banner, "banner")
+    )
+      return false;
     console.log("Profile Validation done");
     return true;
   };
@@ -56,16 +52,29 @@ export default function Profile({ setToShow }) {
     if (!Validation()) {
       return;
     }
-    await sendRequest("api/profile", "POST", user, {}, false).then((result) => {
-      if (result && result.success) {
-        setUser({ data: result.data.data });
-        toast.success(result?.data?.message);
-      } else {
-        const errorMessage =
-          result?.error || result?.data?.message || "An error occurred";
-        toast.error(errorMessage);
-      }
-    });
+    const { name, bio, banner, pic } = user;
+    const toSend = { name, bio };
+    if (banner instanceof File) {
+      const baseImage = await readMedia(banner);
+      toSend["banner"] = baseImage;
+    }
+    if (pic instanceof File) {
+      const baseImage = await readMedia(pic);
+      toSend["pic"] = baseImage;
+    }
+    await sendRequest("api/profile/update", "PATCH", toSend, {}, false).then(
+      (result) => {
+        if (result && result.success) {
+          setSave(false);
+          setUser({ data: result.data.data });
+          toast.success(result?.data?.message);
+        } else {
+          const errorMessage =
+            result?.error || result?.data?.message || "An error occurred";
+          toast.error(errorMessage);
+        }
+      },
+    );
   };
   return (
     <section className="relative flex flex-col w-full h-full bg-bgprimary/50 text-text overflow-x-hidden overscroll-y-auto">

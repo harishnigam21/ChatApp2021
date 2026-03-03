@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDB from "./DB/DBConnection.js";
 import Auth from "./routes/Auth.js";
 import Message from "./routes/Message.js";
+import Profile from "./routes/Profile.js";
 import corsOptions from "./config/cors.js";
 import { envList } from "./envConfig.js";
 import { Server } from "socket.io";
@@ -53,6 +54,7 @@ app.use(cookieParser());
 //routes
 app.use("/api/auth", Auth);
 app.use("/api/message", Message);
+app.use("/api/profile", Profile);
 
 app.get("/", (req, res) =>
   res.status(200).json({ message: "Backend Server running successfully" }),

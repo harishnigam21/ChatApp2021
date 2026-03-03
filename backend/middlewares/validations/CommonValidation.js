@@ -6,7 +6,7 @@ export const sendError = (error, res) => {
   res.status(422).json({ message: error });
   return true;
 };
-export const validateInput = (type, value, res) => {
+export const validateInput = (type, value, valueType, res) => {
   const patterns = {
     password:
       /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]:;"'<>,.?/\\|~`-])[^\s]{8,}$/,
@@ -44,16 +44,25 @@ export const validateInput = (type, value, res) => {
       break;
 
     case "image":
-      const maxSize = convertToByte(envList.MAX_IMAGE_SIZE);
-      if (value.size > maxSize) {
-        return sendError(
-          `File is too large (Max ${envList.MAX_IMAGE_SIZE})`,
-          res,
-        );
+      const typeSize =
+        valueType == "pic"
+          ? envList.MAX_PIC_SIZE
+          : valueType == "banner"
+            ? envList.MAX_BANNER_SIZE
+            : envList.MAX_PHOTO_SIZE;
+      const maxSize = convertToByte(typeSize);
+      const base64Data = value.split(",")[1];
+      const buffer = Buffer.from(base64Data, "base64");
+      const sizeInBytes = buffer.length;
+      if (sizeInBytes > maxSize) {
+        return sendError(`${valueType} is too large (Max ${typeSize})`, res);
       }
+
       const allowedTypes = envList.IMAGE_FORMAT_ALLOWED.split(",");
-      if (!allowedTypes.includes(value.type)) {
-        const types = allowedTypes.map((val) => val.split("/")[1]).join(", ");
+      const mimeType = value.split(";")[0].split(":")[1]; // "image/jpeg"
+      const extension = mimeType.split("/")[1]; // "jpeg"
+      if (!allowedTypes.includes(extension)) {
+        const types = allowedTypes.join(", ");
         return sendError(`Invalid format. Only ${types} are allowed.`, res);
       }
       break;

@@ -53,10 +53,10 @@ export const validateInput = (type, value, valueType) => {
       }
 
       const allowedTypes = envList.IMAGE_FORMAT_ALLOWED.split(",");
-      const mimeType = value.split(";")[0].split(":")[1]; // "image/jpeg"
-      const extension = mimeType.split("/")[1]; // "jpeg"
+      const extension = value.type.split("/")[1]; // "jpeg"
       if (!allowedTypes.includes(extension)) {
-        const types = allowedTypes.map((val) => val.split("/")[1]).join(", ");
+        const types = allowedTypes.join(", ");
+        console.log(types);
         return sendError(`Invalid format. Only ${types} are allowed.`);
       }
       break;
