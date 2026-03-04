@@ -4,7 +4,7 @@ import { MdLock } from "react-icons/md";
 export default function Login() {
   const navigate = useNavigate();
   return (
-    <section className="w-full h-full p-4 flex justify-center items-start bg-bgprimary">
+    <section className="w-screen h-screen p-4 flex justify-center items-start bg-bgprimary">
       <article className="max-w-full flex-wrap text-center sm:flex-nowrap flex justify-center gap-6 rounded-xl py-5 px-6 bg-border/5 border border-border">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-3">

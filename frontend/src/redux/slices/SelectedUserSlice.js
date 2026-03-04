@@ -4,6 +4,7 @@ const SelectedUserSlice = createSlice({
   initialState: {
     user: null,
     messages: [],
+    media: null,
   },
   reducers: {
     setSelectedUser: (state, action) => {
@@ -36,6 +37,9 @@ const SelectedUserSlice = createSlice({
     updateOnlineTime: (state, action) => {
       state.user = { ...state.user, lastOnline: action.payload };
     },
+    setMedia: (state, action) => {
+      state.media = action.payload.data;
+    },
   },
 });
 export const {
@@ -45,5 +49,6 @@ export const {
   updateMessage,
   updateAllMessage,
   updateOnlineTime,
+  setMedia,
 } = SelectedUserSlice.actions;
 export default SelectedUserSlice.reducer;

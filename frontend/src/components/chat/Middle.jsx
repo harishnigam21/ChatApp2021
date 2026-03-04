@@ -106,7 +106,7 @@ export default function Middle({
           </div>
         </article>
         <hr className="w-full border border-border/20" />
-        {/* chat body */}
+        {/* chat body //TODO : Unable to handle this chat box, when height is small */}
         <article className="flex justify-end-safe flex-col gap-4 grow p-4 h-100 overflow-y-scroll">
           {messages && messages.length > 0 ? (
             messages.map((msg, index) =>
@@ -122,9 +122,9 @@ export default function Middle({
                       alt="user uploaded image"
                     />
                   )}
-                  <div className="flex gap-2">
+                  <div className="relative pb-3 flex gap-2">
                     <p className="wrap-anywhere p-1 pl-2">{msg.message}</p>
-                    <small className="text-[10px] grow text-right flex flex-nowrap items-end justify-end gap-1">
+                    <small className="absolute bottom-0 right-0 text-[10px] grow text-right flex flex-nowrap items-end justify-end gap-1 whitespace-nowrap">
                       {separateTime(msg.createdAt)}
                       {msg.seen ? (
                         <media.BiCheckDouble className="text-base text-blue-700" />
@@ -148,9 +148,9 @@ export default function Middle({
                       alt="user uploaded image"
                     />
                   )}
-                  <div className="flex gap-2">
+                  <div className="relative flex gap-2 pb-3">
                     <p className="wrap-anywhere p-1 pl-2">{msg.message}</p>
-                    <small className="text-[10px] grow text-right flex flex-nowrap items-end justify-end gap-1 pr-1">
+                    <small className="absolute bottom-0 right-0 text-[10px] grow text-right flex flex-nowrap items-end justify-end gap-1 pr-1 whitespace-nowrap">
                       {separateTime(msg.createdAt)}{" "}
                     </small>
                   </div>
