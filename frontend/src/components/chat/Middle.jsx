@@ -10,11 +10,11 @@ import {
 import toast from "react-hot-toast";
 import BouncingLoading from "../common/BouncingLoading.jsx";
 import readMedia from "../../utils/read.js";
-import { separateTime } from "../../utils/getDate.js";
 import { useTimeAgo } from "../../hooks/useTimeAgo.jsx";
 import { relativeLastMessage } from "../../redux/slices/UserSlice.js";
 import Profile from "./sideMenu/Profile.jsx";
 import Setting from "./sideMenu/Setting.jsx";
+import YearMessage from "./message/YearMessage.jsx";
 export default function Middle({
   setInfo,
   setBar,
@@ -108,55 +108,15 @@ export default function Middle({
         <hr className="w-full border border-border/20" />
         {/* chat body //TODO : Unable to handle this chat box, when height is small */}
         <article className="flex justify-end-safe flex-col gap-4 grow p-4 h-100 overflow-y-scroll">
-          {messages && messages.length > 0 ? (
-            messages.map((msg, index) =>
-              msg.receiver_id == selectedUser._id ? (
-                <div
-                  key={`selectedUser/message/${index}`}
-                  className=" rounded-[0px_10px_10px_10px] flex flex-col bg-secondary/80 text-black min-w-30 max-w-[50%] wrap-anywhere you self-start"
-                >
-                  {msg.image && (
-                    <img
-                      src={msg.image}
-                      className="object-center object-cover w-80 rounded-tr-md"
-                      alt="user uploaded image"
-                    />
-                  )}
-                  <div className="relative pb-3 flex gap-2">
-                    <p className="wrap-anywhere p-1 pl-2">{msg.message}</p>
-                    <small className="absolute bottom-0 right-0 text-[10px] grow text-right flex flex-nowrap items-end justify-end gap-1 whitespace-nowrap">
-                      {separateTime(msg.createdAt)}
-                      {msg.seen ? (
-                        <media.BiCheckDouble className="text-base text-blue-700" />
-                      ) : onlineUsers?.includes(selectedUser._id) ? (
-                        <media.BiCheckDouble className="text-base" />
-                      ) : (
-                        <media.BiCheck className="text-base" />
-                      )}
-                    </small>
-                  </div>
-                </div>
-              ) : (
-                <div
-                  key={`selectedUser/message/${index}`}
-                  className="rounded-[10px_0px_10px_10px] flex flex-col bg-secondary/80 text-black min-w-30 max-w-[50%] wrap-anywhere me self-end"
-                >
-                  {msg.image && (
-                    <img
-                      src={msg.image}
-                      className="object-center object-cover w-100 rounded-tl-md"
-                      alt="user uploaded image"
-                    />
-                  )}
-                  <div className="relative flex gap-2 pb-3">
-                    <p className="wrap-anywhere p-1 pl-2">{msg.message}</p>
-                    <small className="absolute bottom-0 right-0 text-[10px] grow text-right flex flex-nowrap items-end justify-end gap-1 pr-1 whitespace-nowrap">
-                      {separateTime(msg.createdAt)}{" "}
-                    </small>
-                  </div>
-                </div>
-              ),
-            )
+          {messages && Object.keys(messages).length > 0 ? (
+            Object.entries(messages).map(([year, dates], index) => (
+              <YearMessage
+                key={`selectedUser/year/message/${index}`}
+                year={year}
+                dates={dates}
+                selectedUser={selectedUser}
+              />
+            ))
           ) : (
             <section className="w-full h-full hidden md:flex items-center justify-center">
               <SimpleNotify message={"Start Chatting Now!"} />

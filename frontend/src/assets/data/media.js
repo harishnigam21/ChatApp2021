@@ -16,6 +16,7 @@ import { BiCheckDouble, BiCheck } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
 import { IoIosSettings } from "react-icons/io";
 import { MdEdit } from "react-icons/md";
+import { FaCaretDown } from "react-icons/fa6";
 
 export const media = {
   MBG,
@@ -37,4 +38,5 @@ export const media = {
   CgProfile,
   IoIosSettings,
   MdEdit,
+  FaCaretDown,
 };

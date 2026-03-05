@@ -51,3 +51,14 @@ export const formatChatMessageDate = (dateString) => {
   const year = String(date.getFullYear()).slice(-2);
   return `${day}/${month}/${year}`;
 };
+
+//"2026-03-03T14:40:24.099Z" ---> 03/03/2026
+export const formatDate = (isoString) => {
+  if (!isoString) return "";
+  const date = new Date(isoString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+

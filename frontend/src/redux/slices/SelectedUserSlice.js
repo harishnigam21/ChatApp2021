@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { formatDate } from "../../utils/getDate";
 const SelectedUserSlice = createSlice({
   name: "selected_user",
   initialState: {
     user: null,
-    messages: [],
+    messages: {},
     media: null,
   },
   reducers: {
@@ -11,28 +12,63 @@ const SelectedUserSlice = createSlice({
       state.user = action.payload.data;
     },
     setMessages: (state, action) => {
-      state.messages = [...state.messages, action.payload.data];
+      const message = action.payload.data;
+      if (message) {
+        const date = formatDate(message.createdAt);
+        const year = date.slice(-4);
+        if (!state.messages[year]) {
+          state.messages[year] = {};
+        }
+        if (!state.messages[year][date]) {
+          state.messages[year][date] = [];
+        }
+        state.messages[year][date].push(message);
+      }
     },
     addMessages: (state, action) => {
       state.messages = action.payload.data;
     },
     updateMessage: (state, action) => {
-      const currentMessages = state.messages;
-      state.messages = currentMessages.map((msg) => {
-        if (msg._id == action.payload) {
-          return { ...msg, seen: true };
-        }
-        return msg;
-      });
+      state.messages = Object.entries(state.messages).reduce(
+        (acc, [year, dates]) => {
+          const updatedDates = Object.entries(dates).reduce(
+            (dateAcc, [date, messages]) => {
+              const updatedMessages = messages.map((msg) =>
+                msg._id === action.payload ? { ...msg, seen: true } : msg,
+              );
+              dateAcc[date] = updatedMessages;
+              return dateAcc;
+            },
+            {},
+          );
+
+          acc[year] = updatedDates;
+          return acc;
+        },
+        {},
+      );
     },
     updateAllMessage: (state, action) => {
-      const currentMessages = state.messages;
-      state.messages = currentMessages.map((msg) => {
-        if (msg.seen == false && msg.receiver_id == action.payload) {
-          return { ...msg, seen: true };
-        }
-        return msg;
-      });
+      state.messages = Object.entries(state.messages).reduce(
+        (acc, [year, dates]) => {
+          const updatedDates = Object.entries(dates).reduce(
+            (dateAcc, [date, messages]) => {
+              const updatedMessages = messages.map((msg) =>
+                msg.seen == false && msg.receiver_id == action.payload
+                  ? { ...msg, seen: true }
+                  : msg,
+              );
+              dateAcc[date] = updatedMessages;
+              return dateAcc;
+            },
+            {},
+          );
+
+          acc[year] = updatedDates;
+          return acc;
+        },
+        {},
+      );
     },
     updateOnlineTime: (state, action) => {
       state.user = { ...state.user, lastOnline: action.payload };
