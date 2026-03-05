@@ -191,19 +191,20 @@ const Left = memo(function Left({
                   </div>
                   <div className="flex flex-nowrap gap-1 items-center text-txlight/70">
                     {relativeUsers.lastMessages[usr._id].sender_id ==
-                      user._id && (
-                      <div>
-                        {relativeUsers.lastMessages[usr._id].seen ? (
-                          <media.BiCheckDouble className="text-blue-500 text-xl" />
-                        ) : onlineUsers.includes(
-                            relativeUsers.lastMessages[usr._id].receiver_id,
-                          ) ? (
-                          <media.BiCheckDouble className="text-xl" />
-                        ) : (
-                          <media.BiCheck className="text-xl" />
-                        )}
-                      </div>
-                    )}
+                      user._id &&
+                      onlineUsers && (
+                        <div>
+                          {relativeUsers.lastMessages[usr._id].seen ? (
+                            <media.BiCheckDouble className="text-blue-500 text-xl" />
+                          ) : onlineUsers.includes(
+                              relativeUsers.lastMessages[usr._id].receiver_id,
+                            ) ? (
+                            <media.BiCheckDouble className="text-xl" />
+                          ) : (
+                            <media.BiCheck className="text-xl" />
+                          )}
+                        </div>
+                      )}
                     {relativeUsers.lastMessages[usr._id].image && (
                       <media.FaImage className="text-xl" />
                     )}
