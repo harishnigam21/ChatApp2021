@@ -4,6 +4,7 @@ import DayMessage from "./DayMessage";
 
 export default function YearMessage({ year, dates, selectedUser }) {
   const [show, setShow] = useState(true);
+  const sortableDate = (dateStr) => dateStr.split("/").reverse().join("");
   return (
     <article className="w-full flex flex-col gap-4">
       <div
@@ -18,14 +19,16 @@ export default function YearMessage({ year, dates, selectedUser }) {
         <hr className="grow border border-border/10" />
       </div>
       {show &&
-        Object.entries(dates).map(([date, messages], index) => (
-          <DayMessage
-            date={date}
-            messages={messages}
-            key={`selectedUser/date/message/${index}`}
-            selectedUser={selectedUser}
-          />
-        ))}
+        Object.entries(dates)
+          .sort((a, b) => sortableDate(a[0]).localeCompare(sortableDate(b[0])))
+          .map(([date, messages], index) => (
+            <DayMessage
+              date={date}
+              messages={messages}
+              key={`selectedUser/date/message/${index}`}
+              selectedUser={selectedUser}
+            />
+          ))}
     </article>
   );
 }

@@ -7,12 +7,14 @@ import toast from "react-hot-toast";
 import BouncingLoading from "../common/BouncingLoading.jsx";
 import { formatChatMessageDate } from "../../utils/getDate.js";
 import { useElementHeight } from "../../hooks/useElementHeight.jsx";
+import { useNavigate } from "react-router-dom";
 const Left = memo(function Left({
   selectedUser,
   getRelativeMessage,
   bar,
   setToShow,
 }) {
+  const navigate = useNavigate();
   const onlineUsers = useSelector((store) => store.user.onlineUsers);
   const relativeUsers = useSelector((store) => store.user.relativeUsers);
   const [filteredUser, setFilteredUser] = useState(relativeUsers.user);
@@ -57,7 +59,12 @@ const Left = memo(function Left({
         className=" flex sticky top-0 items-center justify-between p-4"
       >
         <div className="flex items-center gap-4">
-          <img src={media.LGL} alt="logo" className="w-10 h-10" />
+          <img
+            src={media.LGL}
+            alt="logo"
+            className="w-10 h-10 cursor-pointer"
+            onClick={() => navigate("/")}
+          />
           <p className="text-base font-medium mt-1">ChatFlow</p>
         </div>
         <div className=" flex items-center cursor-pointer">

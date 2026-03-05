@@ -32,6 +32,7 @@ export default function Middle({
   const messages = useSelector((store) => store.selectedUser.messages);
   const [msg, setMsg] = useState("");
   const [image, setImage] = useState(null);
+
   useEffect(() => {
     if (scrollToRef.current) {
       scrollToRef.current.scrollIntoView({ behavior: "smooth" });
@@ -109,14 +110,16 @@ export default function Middle({
         {/* chat body //TODO : Unable to handle this chat box, when height is small */}
         <article className="flex justify-end-safe flex-col gap-4 grow p-4 h-100 overflow-y-scroll">
           {messages && Object.keys(messages).length > 0 ? (
-            Object.entries(messages).map(([year, dates], index) => (
-              <YearMessage
-                key={`selectedUser/year/message/${index}`}
-                year={year}
-                dates={dates}
-                selectedUser={selectedUser}
-              />
-            ))
+            Object.entries(messages)
+              .sort((a, b) => Number(a[0]) - Number(b[0]))
+              .map(([year, dates], index) => (
+                <YearMessage
+                  key={`selectedUser/year/message/${index}`}
+                  year={year}
+                  dates={dates}
+                  selectedUser={selectedUser}
+                />
+              ))
           ) : (
             <section className="w-full h-full hidden md:flex items-center justify-center">
               <SimpleNotify message={"Start Chatting Now!"} />
