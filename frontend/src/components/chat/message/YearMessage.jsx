@@ -11,7 +11,7 @@ export default function YearMessage({ year, dates, selectedUser }) {
         onClick={() => setShow((prev) => !prev)}
       >
         <hr className="grow border border-border/10" />
-        <small className="cursor-pointer">{year}</small>
+        <small className=" cursor-pointer">{year}</small>
         <media.FaCaretDown
           className={`${show ? "rotate-0" : "rotate-180"} cursor-pointer mx-2 transition-all`}
         />
