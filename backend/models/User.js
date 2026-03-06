@@ -32,6 +32,22 @@ const userSchema = mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users",
+        default: [],
+        required: true,
+      },
+    ],
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users",
+        default: [],
+        required: true,
+      },
+    ],
     refreshToken: {
       type: String,
       select: false,
