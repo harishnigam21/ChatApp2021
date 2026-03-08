@@ -1,8 +1,38 @@
-import Request from "../models/Interact.js";
+import Request from "../models/Request.js";
 import User from "../models/User.js";
 import Interact from "../models/Interact.js";
 import mongoose from "mongoose";
-export const follow = async (req, res) => {};
+const type = "connection";
+export const follow = async (req, res) => {
+  try {
+    const followingExist = await User.findById(req.params.id).lean();
+    if (!followingExist) {
+      console.log(`following person doesn't exist`);
+      return res
+        .status(404)
+        .json({ message: `following person doesn't exist` });
+    }
+    const requestExist = await Request.findOne({
+      sender_id: req.user.id,
+      receiver_id: followingExist._id,
+    });
+    if (requestExist) {
+      return res.status(409).json({ message: "Request already exists" });
+    }
+    const request = await Request.create({
+      sender_id: req.user.id,
+      receiver_id: followingExist._id,
+      type,
+    });
+    console.log("Successfully request created");
+    return res
+      .status(201)
+      .json({ message: "Successfully request created", data: request });
+  } catch (error) {
+    console.log("Error from follow controller : ", error);
+    return res.status(500).json("Internal Server Error");
+  }
+};
 export const unfollow = async (req, res) => {
   const session = await mongoose.startSession();
   try {
@@ -56,84 +86,9 @@ export const unfollow = async (req, res) => {
       .json({ message: "You have not followed this person yet!" });
   } catch (error) {
     await session.abortTransaction();
-    console.log("Error from follow controller : ", error);
+    console.log("Error from unfollow controller : ", error);
     return res.status(500).json("Internal Server Error");
   } finally {
     await session.endSession();
-  }
-};
-export const acceptRequest = async (req, res) => {
-  const session = await mongoose.startSession();
-  try {
-    session.startTransaction();
-    const requestExist = await Request.findOneAndUpdate({
-      _id: req.params.id,
-      receiver_id: req.user.id,
-    }).session(session);
-    if (!requestExist) {
-      await session.abortTransaction();
-      console.log("No such request Exist");
-      return res.status(404).json({ message: "No such request Exist" });
-    }
-    await Interact.create(
-      [
-        {
-          follower_id: requestExist.sender_id,
-          following_id: requestExist.receiver_id,
-        },
-      ],
-      { session },
-    );
-    await User.findByIdAndUpdate(
-      requestExist.sender_id,
-      {
-        $addToSet: { following: requestExist.receiver_id },
-      },
-      { returnDocument: "after", session },
-    );
-    const updatedList = await User.findByIdAndUpdate(
-      requestExist.receiver_id,
-      {
-        $addToSet: { followers: requestExist.sender_id },
-      },
-      { returnDocument: "after", session },
-    )
-      .select("following")
-      .lean();
-
-    requestExist.status = "accepted";
-    await requestExist.save({ session });
-    await session.commitTransaction();
-    console.log("Successfully Accepted  Request.");
-    return res
-      .status(201)
-      .json({ message: "Successfully Accepted  Request.", data: updatedList });
-  } catch (error) {
-    await session.abortTransaction();
-    console.log("Error from acceptRequest controller : ", error);
-    return res.status(500).json("Internal Server Error");
-  } finally {
-    await session.endSession();
-  }
-};
-export const rejectRequest = async (req, res) => {
-  try {
-    const requestExist = await Request.findOneAndUpdate({
-      _id: req.params.id,
-      receiver_id: req.user.id,
-    });
-    if (!requestExist) {
-      console.log("No such request Exist");
-      return res.status(404).json({ message: "No such request Exist" });
-    }
-    requestExist.status = "rejected";
-    await requestExist.save();
-    console.log("Successfully Rejected  Request.");
-    return res
-      .status(200)
-      .json({ message: "Successfully Rejected  Request.", data: updatedList });
-  } catch (error) {
-    console.log("Error from rejectRequest controller : ", error);
-    return res.status(500).json("Internal Server Error");
   }
 };

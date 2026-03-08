@@ -1,42 +1,38 @@
 import { memo, useEffect, useRef, useState } from "react";
 import { media } from "../../assets/data/media.js";
-import useApi from "../../hooks/Api.jsx";
-import { useDispatch, useSelector } from "react-redux";
-import { setRelativeUser } from "../../redux/slices/UserSlice.js";
-import toast from "react-hot-toast";
-import BouncingLoading from "../common/BouncingLoading.jsx";
-import { formatChatMessageDate } from "../../utils/getDate.js";
 import { useElementHeight } from "../../hooks/useElementHeight.jsx";
 import { useNavigate } from "react-router-dom";
+import Participants from "./Participants.jsx";
+import Contacts from "./Contacts.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import Requests from "./Requests.jsx";
+import { setOtherUser, setRelativeUser, setRequest } from "../../redux/slices/UserSlice.js";
+import useApi from "../../hooks/Api.jsx";
+import BouncingLoading from "../common/BouncingLoading.jsx";
+import toast from "react-hot-toast";
+
 const Left = memo(function Left({
   selectedUser,
   getRelativeMessage,
   bar,
   setToShow,
 }) {
+  const { sendRequest: usersRequest } = useApi();
+  const { sendRequest: relativeRequest } = useApi();
+  const { sendRequest: requestRequest } = useApi();
   const navigate = useNavigate();
-  const onlineUsers = useSelector((store) => store.user.onlineUsers);
+  const dispatch = useDispatch();
   const relativeUsers = useSelector((store) => store.user.relativeUsers);
   const [filteredUser, setFilteredUser] = useState(relativeUsers.user);
   const [search, setSearch] = useState("");
-  const user = useSelector((store) => store.user.userInfo);
-  const dispatch = useDispatch();
-  const { sendRequest, loading } = useApi();
   const [toggle, setToggle] = useState(false);
   const [expand, setExpand] = useState(false);
   const inHeader = useRef(null);
   const inHeaderHeight = useElementHeight(inHeader);
   const userList = useRef(null);
   const userListHeight = useElementHeight(userList);
-  useEffect(() => {
-    sendRequest("api/message/relative").then((result) => {
-      if (result && result.success) {
-        dispatch(setRelativeUser({ data: result.data.data }));
-      } else {
-        toast.error(result.data.message || "Failed to Fetch");
-      }
-    });
-  }, []);
+  const [tab, setTab] = useState("chat");
+  const [show, setShow] = useState(false);
   useEffect(() => {
     setFilteredUser(relativeUsers.user);
   }, [relativeUsers]);
@@ -48,8 +44,37 @@ const Left = memo(function Left({
         ),
       );
   }, [search]);
-
-  return !loading ? (
+  useEffect(() => {
+    try {
+      relativeRequest("api/users/relative").then((result) => {
+        if (result && result.success) {
+          dispatch(setRelativeUser({ data: result.data.data }));
+        } else {
+          toast.error(result.data.message || "Failed to Fetch");
+        }
+      });
+      usersRequest("api/users/all").then((result) => {
+        if (result && result.success) {
+          dispatch(setOtherUser({ data: result.data.data }));
+        } else {
+          toast.error(result.data.message || "Failed to Fetch");
+        }
+      });
+      requestRequest("api/request/all").then((result) => {
+        if (result && result.success) {
+          dispatch(setRequest({ data: result.data.data }));
+        } else {
+          toast.error(result.data.message || "Failed to Fetch");
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    } finally {
+      setShow(true);
+    }
+  }, []);
+  return show ? (
     <section
       className={`relative h-full overflow-hidden flex flex-col text-text backdrop-blur-[3px] ${!bar ? "opacity-0 w-0" : "opacity-100 w-full"} transition-all`}
     >
@@ -160,86 +185,44 @@ const Left = memo(function Left({
         />
       </div>
       <hr className="w-full border border-border/20" />
-
-      {/* participation list */}
-      <article
-        className="flex flex-col flex-1 gap-2 p-4 overflow-y-auto"
-        ref={userList}
-      >
-        {filteredUser &&
-          filteredUser.length > 0 &&
-          filteredUser.map((usr, index) => (
-            <div
-              key={`chat/list/user/${index}`}
-              className={`flex gap-4 p-2 ${selectedUser?._id == usr._id && "bg-primary/50 rounded-md"} cursor-pointer`}
-              onClick={() => getRelativeMessage(usr)}
-            >
-              {usr.pic ? (
-                <img
-                  src={usr.pic}
-                  alt="user pic"
-                  className="aspect-square rounded-full w-12 h-12 object-cover object-center"
-                />
-              ) : (
-                <div className="aspect-square rounded-full w-12 h-12 flex items-center justify-center bg-bgprimary text-text uppercase">
-                  <strong>{usr.name.slice(0, 2)}</strong>
-                </div>
-              )}
-
-              {relativeUsers?.lastMessages?.[usr._id] ? (
-                <div className="flex w-full flex-col">
-                  <div className="flex w-full justify-between items-center flex-wrap">
-                    <strong>{usr.name}</strong>
-                    <small className="text-txlight/70">
-                      {formatChatMessageDate(
-                        relativeUsers.lastMessages[usr._id].createdAt,
-                      )}
-                    </small>
-                  </div>
-                  <div className="flex flex-nowrap gap-1 items-center text-txlight/70">
-                    {relativeUsers.lastMessages[usr._id].sender_id ==
-                      user._id &&
-                      onlineUsers && (
-                        <div>
-                          {relativeUsers.lastMessages[usr._id].seen ? (
-                            <media.BiCheckDouble className="text-blue-500 text-xl" />
-                          ) : onlineUsers.includes(
-                              relativeUsers.lastMessages[usr._id].receiver_id,
-                            ) ? (
-                            <media.BiCheckDouble className="text-xl" />
-                          ) : (
-                            <media.BiCheck className="text-xl" />
-                          )}
-                        </div>
-                      )}
-                    {relativeUsers.lastMessages[usr._id].image && (
-                      <media.FaImage className="text-xl" />
-                    )}
-                    <small className="wrap-anywhere basis-full line-clamp-1">
-                      {relativeUsers.lastMessages[usr._id].message}
-                    </small>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col">
-                  <div className="flex justify-between items-center flex-wrap">
-                    <strong>{usr.name}</strong>
-                  </div>
-                  <small className="text-txlight/70">
-                    Start Chatting Now...
-                  </small>
-                </div>
-              )}
-              {relativeUsers?.unseen?.[usr._id] > 0 && (
-                <div className="flex items-center justify-end grow">
-                  <p className="w-10 flex justify-center aspect-square p-2 rounded-full bg-primary/50">
-                    {relativeUsers.unseen[usr._id]}
-                  </p>
-                </div>
-              )}
-            </div>
-          ))}
+      {/* section : different tabs like chat,contact */}
+      <article className="flex">
+        <div
+          className={`grow flex items-center-safe justify-center p-2 border-r border-r-secondary cursor-pointer hover:bg-primary ${tab == "chat" && "bg-primary"} transition-all`}
+          onClick={() => setTab("chat")}
+        >
+          <media.IoChatbubbleSharp className="text-4xl text-tertiary" />
+        </div>
+        <div
+          className={`grow flex items-center-safe justify-center p-2 border-r border-r-secondary cursor-pointer hover:bg-primary ${tab == "contact" && "bg-primary"} transition-all`}
+          onClick={() => setTab("contact")}
+        >
+          <media.RiContactsBook3Fill className="text-4xl text-tertiary" />
+        </div>
+        <div
+          className={`grow flex items-center-safe justify-center p-2 cursor-pointer hover:bg-primary ${tab == "request" && "bg-primary"} transition-all`}
+          onClick={() => setTab("request")}
+        >
+          <media.FaCodePullRequest className="text-2xl text-tertiary" />
+        </div>
       </article>
+      <hr className="w-full border border-border/20" />
+
+      {tab == "chat" ? (
+        // participation list
+        <Participants
+          userList={userList}
+          filteredUser={filteredUser}
+          selectedUser={selectedUser}
+          getRelativeMessage={getRelativeMessage}
+        />
+      ) : tab == "contact" ? (
+        <Contacts />
+      ) : tab == "request" ? (
+        <Requests />
+      ) : (
+        <p>TODO</p>
+      )}
     </section>
   ) : (
     <div className="flex w-full h-full items-center justify-center">

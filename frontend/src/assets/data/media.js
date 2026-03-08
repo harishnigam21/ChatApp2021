@@ -17,6 +17,10 @@ import { CgProfile } from "react-icons/cg";
 import { IoIosSettings } from "react-icons/io";
 import { MdEdit } from "react-icons/md";
 import { FaCaretDown } from "react-icons/fa6";
+import { BiSolidMessageAltAdd } from "react-icons/bi";
+import { IoChatbubbleSharp } from "react-icons/io5";
+import { RiContactsBook3Fill } from "react-icons/ri";
+import { FaCodePullRequest } from "react-icons/fa6";
 
 export const media = {
   MBG,
@@ -39,4 +43,8 @@ export const media = {
   IoIosSettings,
   MdEdit,
   FaCaretDown,
+  BiSolidMessageAltAdd,
+  IoChatbubbleSharp,
+  RiContactsBook3Fill,
+  FaCodePullRequest,
 };

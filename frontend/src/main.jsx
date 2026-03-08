@@ -7,6 +7,7 @@ import Store from "./redux/Store.js";
 import App from "./App.jsx";
 import Loading from "./components/common/Loading.jsx";
 import ParticleBackground from "./components/background/ParticleBackground.jsx";
+import { Toaster } from "react-hot-toast";
 const Home = lazy(() => import("./Home.jsx"));
 const ChatMain = lazy(() => import("./components/chat/Main.jsx"));
 const Auth = lazy(() => import("./components/auth/Auth.jsx"));
@@ -139,6 +140,7 @@ const router = createBrowserRouter([
 ]);
 createRoot(document.getElementById("root")).render(
   <Provider store={Store}>
+    <Toaster />
     <ParticleBackground />
     <RouterProvider router={router} />
   </Provider>,

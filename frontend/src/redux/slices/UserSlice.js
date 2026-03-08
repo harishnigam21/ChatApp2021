@@ -9,6 +9,8 @@ const UserSlice = createSlice({
       lastMessages: null,
     },
     onlineUsers: null,
+    otherUsers: null,
+    request: null,
     loginStatus: false,
     connected: false,
   },
@@ -22,6 +24,15 @@ const UserSlice = createSlice({
     },
     setOnlineUser: (state, action) => {
       state.onlineUsers = action.payload.data;
+    },
+    setOtherUser: (state, action) => {
+      state.otherUsers = action.payload.data;
+    },
+    setRequest: (state, action) => {
+      state.request = action.payload.data;
+    },
+    addRequest: (state, action) => {
+      state.request.push(action.payload.data);
     },
     setRelativeUser: (state, action) => {
       state.relativeUsers = action.payload.data;
@@ -89,5 +100,8 @@ export const {
   setRelativeUserLastMessage,
   relativeLastMessageSeen,
   relativeLastMessageSeenPro,
+  setOtherUser,
+  setRequest,
+  addRequest,
 } = UserSlice.actions;
 export default UserSlice.reducer;

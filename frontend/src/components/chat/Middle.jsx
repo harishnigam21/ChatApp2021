@@ -67,6 +67,8 @@ export default function Middle({
         );
         setMsg("");
         setImage(null);
+      } else {
+        toast.error(result.data.message);
       }
     });
   };

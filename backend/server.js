@@ -6,6 +6,8 @@ import Auth from "./routes/Auth.js";
 import Message from "./routes/Message.js";
 import Profile from "./routes/Profile.js";
 import Interact from "./routes/Interact.js";
+import Users from "./routes/Users.js";
+import Request from "./routes/Request.js";
 import corsOptions from "./config/cors.js";
 import { envList } from "./envConfig.js";
 import { Server } from "socket.io";
@@ -57,6 +59,8 @@ app.use("/api/auth", Auth);
 app.use("/api/message", Message);
 app.use("/api/profile", Profile);
 app.use("/api/interact", Interact);
+app.use("/api/users", Users);
+app.use("/api/request", Request);
 
 app.get("/", (req, res) =>
   res.status(200).json({ message: "Backend Server running successfully" }),
