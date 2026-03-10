@@ -34,6 +34,10 @@ const UserSlice = createSlice({
     addRequest: (state, action) => {
       state.request.push(action.payload.data);
     },
+    deleteRequest: (state, action) => {
+      const id = action.payload.toString();
+      state.request = state.request.filter((item) => item._id != id);
+    },
     setRelativeUser: (state, action) => {
       state.relativeUsers = action.payload.data;
     },
@@ -85,6 +89,11 @@ const UserSlice = createSlice({
           action.payload.data;
       }
     },
+    updateFollowers: (state, action) => {
+      if (state.userInfo.followers) {
+        state.userInfo.followers.push(action.payload);
+      }
+    },
   },
 });
 export const {
@@ -103,5 +112,7 @@ export const {
   setOtherUser,
   setRequest,
   addRequest,
+  updateFollowers,
+  deleteRequest,
 } = UserSlice.actions;
 export default UserSlice.reducer;

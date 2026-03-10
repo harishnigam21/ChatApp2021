@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from "react-redux";
-import { media } from "../../assets/data/media.js";
 import { useEffect, useState } from "react";
 import useApi from "../../hooks/Api.jsx";
 import { addRequest } from "../../redux/slices/UserSlice.js";
@@ -15,15 +14,12 @@ export default function Contacts() {
   useEffect(() => {
     if (user) {
       requests.filter((item) => {
-        if (item.type == "connection" && item.sender_id == user._id) {
-          setStatus((prev) => ({ ...prev, [item.receiver_id]: item.status }));
+        if (item.type == "connection" && item.sender_id._id == user._id) {
+          setStatus((prev) => ({ ...prev, [item.receiver_id._id]: item.status }));
         }
       });
     }
-    console.log(status);
   }, [requests]);
-  console.log(requests);
-  console.log(contact);
   const handleFollow = async (id) => {
     await sendRequest(`api/interact/follow/${id}`, "POST", {}, {}, false).then(
       (result) => {
@@ -54,12 +50,12 @@ export default function Contacts() {
               <div className="flex items-center justify-end-safe grow">
                 {user.following.includes(usr._id) ? (
                   <div className="flex items-center">
-                    <button className="px-2 rounded-full bg-blue-500 font-medium">
+                    <button className="px-2 rounded-full bg-blue-500 font-medium flex items-center gap-2">
                       UnFollow
                     </button>
                   </div>
                 ) : user.followers.includes(usr._id) ? (
-                  <button className="px-2 rounded-full bg-red-500 font-medium">
+                  <button className="px-2 rounded-full bg-red-500 font-medium flex items-center gap-2">
                     Remove
                   </button>
                 ) : (
@@ -73,10 +69,10 @@ export default function Contacts() {
                       </button>
                     ) : (
                       <button
-                        className="px-2 rounded-full bg-green-500 font-medium text-black"
+                        className="px-2 rounded-full bg-green-500 font-medium text-black flex items-center gap-2"
                         onClick={() => handleFollow(usr._id)}
                       >
-                        Follow
+                        Follow {loading && <span className="spinner"></span>}
                       </button>
                     )}
                   </div>

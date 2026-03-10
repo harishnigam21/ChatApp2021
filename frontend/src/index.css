@@ -147,9 +147,17 @@ button:disabled {
     transform: translateY(0);
   }
 }
-@keyframes expand {
+@keyframes expandLeft {
   0% {
     transform: translateX(100px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+@keyframes expandRight {
+  0% {
+    transform: translateX(-100px);
   }
   100% {
     transform: translateX(0px);

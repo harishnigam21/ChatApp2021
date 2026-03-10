@@ -3,18 +3,18 @@ import { useSelector } from "react-redux";
 import { media } from "../../assets/data/media.js";
 
 export default function Participants({
-  userList,
+  participationRef,
   filteredUser,
   getRelativeMessage,
   selectedUser,
 }) {
   const onlineUsers = useSelector((store) => store.user.onlineUsers);
   const user = useSelector((store) => store.user.userInfo);
-
+  const relativeUsers = useSelector((store) => store.user.relativeUsers);
   return (
     <article
       className="flex flex-col flex-1 gap-2 p-4 overflow-y-auto"
-      ref={userList}
+      ref={participationRef}
     >
       {filteredUser && filteredUser.length > 0 ? (
         filteredUser.map((usr, index) => (
