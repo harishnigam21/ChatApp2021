@@ -1,7 +1,13 @@
-import React from 'react'
+import ByYou from "./request/ByYou";
+import ForYou from "./request/ForYou";
 
 export default function Requests() {
   return (
-    <div>Requests</div>
-  )
+    <section className="flex flex-col gap-8">
+      {/* by you */}
+      <ByYou />
+      {/* for you */}
+      <ForYou />
+    </section>
+  );
 }
