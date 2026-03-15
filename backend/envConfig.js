@@ -3,6 +3,7 @@ configDotenv();
 
 export const envList = {
   PORT: process.env.PORT,
+  ROOT: process.env.ROOT,
   SECURE: process.env.SECURE,
   BACKEND_HOST: process.env.BACKEND_HOST,
   FRONTEND_HOST: process.env.FRONTEND_HOST,
@@ -12,7 +13,7 @@ export const envList = {
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
   DB_STRING: process.env.DB_STRING,
-  MAX_PHOTO_SIZE: process.env.MAX_IMAGE_SIZE,
+  MAX_PHOTO_SIZE: process.env.MAX_PHOTO_SIZE,
   MAX_PIC_SIZE: process.env.MAX_PIC_SIZE,
   MAX_BANNER_SIZE: process.env.MAX_BANNER_SIZE,
   IMAGE_FORMAT_ALLOWED: process.env.IMAGE_FORMAT_ALLOWED,

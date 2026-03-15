@@ -16,6 +16,7 @@ import Profile from "./sideMenu/Profile.jsx";
 import Setting from "./sideMenu/Setting.jsx";
 import YearMessage from "./message/YearMessage.jsx";
 import Emoji from "../common/Emoji.jsx";
+import { validateInput } from "../../utils/CommonValidation.js";
 export default function Middle({
   setInfo,
   setBar,
@@ -41,7 +42,21 @@ export default function Middle({
     }
   }, [messages]);
 
+  const Validation = () => {
+    if (
+      image &&
+      image instanceof File &&
+      validateInput("image", image, "photo")
+    )
+      return false;
+    console.log("Message Validation done");
+    return true;
+  };
+
   const sendMessage = async (id) => {
+    if (!Validation()) {
+      return;
+    }
     if (!id || !msg || msg.trim().length == 0) {
       if (!image) {
         toast.error("Oops Invalid Message !");
@@ -182,7 +197,6 @@ export default function Middle({
                   className="hidden"
                   accept="image/png, image/jpeg, image/webp,image/jpg"
                   onChange={(e) => {
-                    console.log(e.target.files);
                     setImage(e.target.files[0]);
                   }}
                 />

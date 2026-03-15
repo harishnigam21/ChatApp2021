@@ -6,6 +6,9 @@ export default function ForYou() {
   const requests = useSelector((store) => store.user.request);
   const user = useSelector((store) => store.user.userInfo);
   const [show, setShow] = useState(true);
+  const filteredRequest = requests.filter(
+    (item) => item.receiver_id._id == user._id,
+  );
   return (
     <article className="flex flex-col">
       <div
@@ -18,18 +21,18 @@ export default function ForYou() {
         />
         <hr className="w-full border border-border/10" />
       </div>
-      <article
-        className={` flex-col gap-4 p-2 ${show ? "flex" : "hidden"}`}
-      >
-        {requests
-          .filter((item) => item.receiver_id._id == user._id)
-          .map((item, index) => (
+      <article className={` flex-col gap-4 p-2 ${show ? "flex" : "hidden"}`}>
+        {filteredRequest.length > 0 ? (
+          filteredRequest.map((item, index) => (
             <ForYouRequest
               key={`forYou/request/${index}`}
               item={item}
               index={index}
             />
-          ))}
+          ))
+        ) : (
+          <small className="text-red-500">No pending Incoming requests !</small>
+        )}
       </article>
     </article>
   );

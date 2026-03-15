@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import Message from "../models/Message.js";
 import cloudinary from "../utils/cloudinary.js";
+import { envList } from "../envConfig.js";
 export const updateProfile = async (req, res) => {
   const { name, bio, pic, banner } = req.body;
   try {
@@ -12,12 +13,16 @@ export const updateProfile = async (req, res) => {
       toUpdate["bio"] = bio;
     } //TODO:What if the data of image is sended is not in base64 format
     if (pic) {
-      const upload = await cloudinary.uploader.upload(pic);
+      const upload = await cloudinary.uploader.upload(pic, {
+        folder: `${envList.ROOT}/profile/${req.user.id}/pic`,
+      });
       const imageUrl = upload.secure_url;
       toUpdate["pic"] = imageUrl;
     }
     if (banner) {
-      const upload = await cloudinary.uploader.upload(banner);
+      const upload = await cloudinary.uploader.upload(banner, {
+        folder: `${envList.ROOT}/profile/${req.user.id}/banner`,
+      });
       const imageUrl = upload.secure_url;
       toUpdate["banner"] = imageUrl;
     }

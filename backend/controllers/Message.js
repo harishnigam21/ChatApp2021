@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Message from "../models/Message.js";
 import cloudinary from "../utils/cloudinary.js";
 import { io, userSocketMap } from "../server.js";
+import { envList } from "../envConfig.js";
 
 
 export const getRelativeMessages = async (req, res) => {
@@ -117,7 +118,9 @@ export const sendMessage = async (req, res) => {
     }
     let imageUrl = null;
     if (image) {
-      const upload = await cloudinary.uploader.upload(image);
+      const upload = await cloudinary.uploader.upload(image,{
+        folder:`${envList.ROOT}/user/chat/${req.user.id}/messages/${req.params.id}/image`
+      });
       imageUrl = upload.secure_url;
     }
     const newMessage = await Message.create({

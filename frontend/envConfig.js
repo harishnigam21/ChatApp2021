@@ -1,7 +1,7 @@
 export const envList = {
   BACKEND_HOST: import.meta.env.VITE_BACKEND_HOST,
   FRONTEND_HOST: import.meta.env.VITE_FRONTEND_HOST,
-  MAX_PHOTO_SIZE: import.meta.env.VITE_MAX_IMAGE_SIZE,
+  MAX_PHOTO_SIZE: import.meta.env.VITE_MAX_PHOTO_SIZE,
   MAX_PIC_SIZE: import.meta.env.VITE_MAX_PIC_SIZE,
   MAX_BANNER_SIZE: import.meta.env.VITE_MAX_BANNER_SIZE,
   IMAGE_FORMAT_ALLOWED: import.meta.env.VITE_IMAGE_FORMAT_ALLOWED,

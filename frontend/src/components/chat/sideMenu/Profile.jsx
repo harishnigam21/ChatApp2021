@@ -17,6 +17,15 @@ export default function Profile({ setToShow }) {
     banner: currUser.banner,
     bio: currUser.bio,
   });
+  useEffect(() => {
+    setUsr({
+      name: currUser.name,
+      email: currUser.email,
+      pic: currUser.pic,
+      banner: currUser.banner,
+      bio: currUser.bio,
+    });
+  }, [currUser]);
   const [save, setSave] = useState(false);
   const nameRef = useRef(null);
   const bioRef = useRef(null);
@@ -65,6 +74,13 @@ export default function Profile({ setToShow }) {
     await sendRequest("api/profile/update", "PATCH", toSend, {}, false).then(
       (result) => {
         if (result && result.success) {
+          setUsr({
+            name: "",
+            email: " currUser.email",
+            pic: null,
+            banner: null,
+            bio: "",
+          });
           setSave(false);
           dispatch(setUser({ data: result.data.data }));
           toast.success(result?.data?.message);

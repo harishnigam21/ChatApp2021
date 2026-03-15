@@ -1,4 +1,4 @@
-import EmojiPicker from "emoji-picker-react";
+import EmojiPicker, { Theme } from "emoji-picker-react";
 export default function Emoji({ setMessage, showPicker }) {
   const onEmojiClick = (emojiData) => {
     setMessage((prev) => prev + emojiData.emoji);
@@ -6,7 +6,7 @@ export default function Emoji({ setMessage, showPicker }) {
   return (
     showPicker && (
       <div className="absolute left-2 bottom-0">
-        <EmojiPicker onEmojiClick={onEmojiClick} />
+        <EmojiPicker theme={Theme.DARK} onEmojiClick={onEmojiClick} />
       </div>
     )
   );
