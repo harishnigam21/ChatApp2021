@@ -21,7 +21,7 @@ export default function Participants({
         filteredUser.map((usr, index) => (
           <div
             key={`chat/list/user/${index}`}
-            className={`flex gap-4 p-2 ${selectedUser?._id == usr._id && "bg-primary/50 rounded-md"} cursor-pointer`}
+            className={`flex gap-4 p-2 ${selectedUser?._id == usr._id && "bg-primary/50 rounded-md"} cursor-pointer hover:bg-primary/50 hover:rounded-full transition-all`}
             onClick={() => getRelativeMessage(usr)}
           >
             {usr.pic ? (
