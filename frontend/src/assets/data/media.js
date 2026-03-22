@@ -21,6 +21,7 @@ import { BiSolidMessageAltAdd } from "react-icons/bi";
 import { IoChatbubbleSharp } from "react-icons/io5";
 import { RiContactsBook3Fill } from "react-icons/ri";
 import { FaCodePullRequest } from "react-icons/fa6";
+import { MdDownload } from "react-icons/md";
 
 export const media = {
   MBG,
@@ -47,4 +48,5 @@ export const media = {
   IoChatbubbleSharp,
   RiContactsBook3Fill,
   FaCodePullRequest,
+  MdDownload,
 };

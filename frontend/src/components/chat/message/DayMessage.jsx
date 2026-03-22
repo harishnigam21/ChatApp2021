@@ -9,7 +9,7 @@ export default function DayMessage({ date, messages, selectedUser }) {
   return (
     <article className="relative w-full flex flex-col gap-4">
       <div
-        className=" sticky top-0 flex flex-nowrap items-center justify-center"
+        className=" sticky top-0 flex flex-nowrap items-center justify-center z-10"
         onClick={() => setShow((prev) => !prev)}
       >
         <hr className="grow border border-border/10" />
