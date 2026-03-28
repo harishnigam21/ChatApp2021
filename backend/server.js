@@ -17,7 +17,7 @@ import User from "./models/User.js";
 connectDB();
 const app = express();
 const server = http.createServer(app);
-const PORT = envList.PORT || 5005;
+const PORT = envList.PORT || 5004;
 
 //socket setup
 export const io = new Server(server, {
