@@ -12,7 +12,7 @@ export const getRelativeMessages = async (req, res) => {
     //   {
     //     $or: [
     //       {
-    //         sender_id: req.params.id,
+    //         sender_id: receiverId,
     //         receiver_id: req.user.id,
     //       },
     //       {
@@ -24,7 +24,6 @@ export const getRelativeMessages = async (req, res) => {
     //   null,
     //   { session },
     // ).lean();
-
     const messages = await Message.aggregate([
       {
         $match: {
@@ -40,7 +39,23 @@ export const getRelativeMessages = async (req, res) => {
           ],
         },
       },
+      {
+        $match: {
+          deletedFor: { $nin: [new mongoose.Types.ObjectId(req.user.id)] },
+        },
+      },
       { $sort: { createdAt: 1 } },
+      {
+        $addFields: {
+          message: {
+            $cond: [
+              { $eq: ["$deletedForEveryone", true] },
+              "$$REMOVE",
+              "$message",
+            ],
+          },
+        },
+      },
       {
         $group: {
           _id: {
@@ -123,9 +138,9 @@ export const sendMessage = async (req, res) => {
       });
       imageUrl = upload.secure_url;
       thumbnail = upload.secure_url.replace(
-      "/upload/",
-      "/upload/e_blur:1000,q_10,w_200/"
-    );
+        "/upload/",
+        "/upload/e_blur:1000,q_10,w_200/",
+      );
     }
     const newMessage = await Message.create({
       sender_id: req.user.id,
@@ -149,6 +164,7 @@ export const sendMessage = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 export const markSeen = async (req, res) => {
   try {
     const updatedMessage = await Message.findOneAndUpdate(
@@ -168,6 +184,87 @@ export const markSeen = async (req, res) => {
     return res.status(200).json({ message: "unseen ----> seen" });
   } catch (error) {
     console.error("Error from markSeen Controller : ", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const deleteMessages = async (req, res) => {
+  const { messageIds, deleteType } = req.body;
+  if (!messageIds || messageIds.length == 0) {
+    return res.status(400).json({ message: "No message IDs provided" });
+  }
+  try {
+    const userId = new mongoose.Types.ObjectId(req.user.id);
+    const receiverId = new mongoose.Types.ObjectId(req.params.id);
+    if (deleteType == "everyone") {
+      const getUpdate = await Message.updateMany(
+        {
+          _id: { $in: messageIds },
+          sender_id: userId,
+          seen: false,
+          deletedForEveryone: false,
+        },
+        {
+          $set: { deletedForEveryone: true },
+        },
+      );
+      await Message.updateMany(
+        {
+          _id: { $in: messageIds },
+          sender_id: userId,
+          seen: true,
+        },
+        {
+          $addToSet: { deletedFor: userId },
+        },
+      );
+      const recentDoc = await Message.find({
+        $or: [
+          { sender_id: userId, receiver_id: receiverId },
+          { sender_id: receiverId, receiver_id: userId },
+        ],
+        deletedFor: { $nin: [userId] },
+      })
+        .sort({ createdAt: -1 })
+        .limit(1);
+      const receiverSocketId = userSocketMap[req.params.id];
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit("deleteMessage", {
+          id: req.user.id,
+          updateLast: recentDoc[0],
+          count: getUpdate.matchedCount,
+        });
+      }
+      return res
+        .status(200)
+        .json({ success: true, type: "everyone", updateLast: recentDoc[0] });
+    }
+    await Message.updateMany(
+      {
+        _id: { $in: messageIds },
+        $or: [
+          { sender_id: userId, receiver_id: receiverId },
+          { sender_id: receiverId, receiver_id: userId },
+        ],
+      },
+      {
+        $addToSet: { deletedFor: userId },
+      },
+    );
+    const recentDoc = await Message.find({
+      $or: [
+        { sender_id: userId, receiver_id: receiverId },
+        { sender_id: receiverId, receiver_id: userId },
+      ],
+      deletedFor: { $nin: [userId] },
+    })
+      .sort({ createdAt: -1 })
+      .limit(1);
+    res
+      .status(200)
+      .json({ success: true, type: "me", updateLast: recentDoc[0] });
+  } catch (error) {
+    console.error("Error from deleteMessages Controller : ", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };

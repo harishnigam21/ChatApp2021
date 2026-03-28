@@ -20,10 +20,10 @@ export const getAllUsers = async (req, res) => {
 export const getRelativeUsers = async (req, res) => {
   try {
     const getUsers = await User.find({
-      _id: { $ne: req.user.id }, 
+      _id: { $ne: req.user.id },
       $or: [
-        { _id: { $in: req.user.following } }, 
-        { _id: { $in: req.user.followers } }, 
+        { _id: { $in: req.user.following } },
+        { _id: { $in: req.user.followers } },
       ],
     })
       .select("name pic _id banner lastOnline")
@@ -44,6 +44,11 @@ export const getRelativeUsers = async (req, res) => {
             ],
           },
         },
+        {
+          $match: {
+            deletedFor: { $nin: [new mongoose.Types.ObjectId(req.user.id)] },
+          },
+        },
         { $sort: { createdAt: -1 } },
         {
           $group: {
@@ -55,6 +60,7 @@ export const getRelativeUsers = async (req, res) => {
                     $and: [
                       { $eq: ["$sender_id", senderId] }, // Match casted ID
                       { $eq: ["$seen", false] },
+                      { $eq: ["$deletedForEveryone", false] },
                     ],
                   },
                   "$$ROOT",
