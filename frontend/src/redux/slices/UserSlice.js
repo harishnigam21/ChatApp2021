@@ -51,6 +51,17 @@ const UserSlice = createSlice({
         state.relativeUsers.unseen[action.payload] = 1;
       }
     },
+    decrementUnseenMessage: (state, action) => {
+      const id = action.payload.id;
+      const count = action.payload.count;
+      if (state.relativeUsers.unseen[id]) {
+        if (state.relativeUsers.unseen[id] >= count) {
+          state.relativeUsers.unseen[id] -= count;
+        } else {
+          state.relativeUsers.unseen[id] = 0;
+        }
+      }
+    },
     makeSeen: (state, action) => {
       if (state.relativeUsers.unseen[action.payload]) {
         state.relativeUsers.unseen[action.payload] = 0;
@@ -157,6 +168,7 @@ export const {
   setOnlineUser,
   setRelativeUser,
   incrementUnseenMessage,
+  decrementUnseenMessage,
   makeSeen,
   relativeUnseenTime,
   relativeLastMessage,
