@@ -3,6 +3,8 @@ import { media } from "../../assets/data/media.js";
 import useApi from "../../hooks/Api.jsx";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  clearMessageTrash,
+  deleteMessages,
   setMessages,
   setSelectedUser,
 } from "../../redux/slices/SelectedUserSlice.js";
@@ -30,10 +32,16 @@ export default function Middle({
 }) {
   const lastOnlineTime = useTimeAgo(selectedUser?.lastOnline);
   const onlineUsers = useSelector((store) => store.user.onlineUsers);
-  const { sendRequest, loading } = useApi();
+  const messages = useSelector((store) => store.selectedUser.messages);
+  const messageToDelete = useSelector(
+    (store) => store.selectedUser.messageToDelete,
+  );
+  const { sendRequest: sendMessageRequest, loading: sendMessageLoading } =
+    useApi();
+  const { sendRequest: MessageDeleteRequest, loading: MessageDeleteLoading } =
+    useApi();
   const dispatch = useDispatch();
   const scrollToRef = useRef(null);
-  const messages = useSelector((store) => store.selectedUser.messages);
   const [msg, setMsg] = useState("");
   const [image, setImage] = useState(null);
   const [showPicker, setShowPicker] = useState(false);
@@ -42,7 +50,7 @@ export default function Middle({
     if (scrollToRef.current) {
       scrollToRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, []);
+  }, [messages]);
 
   const Validation = () => {
     if (
@@ -69,7 +77,7 @@ export default function Middle({
     if (image) {
       baseImage = await readMedia(image);
     }
-    await sendRequest(
+    await sendMessageRequest(
       `api/message/to/${id}`,
       "POST",
       { message: msg, image: baseImage },
@@ -93,7 +101,8 @@ export default function Middle({
         setMsg("");
         setImage(null);
       } else {
-        toast.error(result.data.message);
+        const errMsg = result?.data?.message || "Failed to send Message";
+        toast.error(errMsg);
       }
     });
   };
@@ -101,6 +110,40 @@ export default function Middle({
     if (!image) return null;
     return URL.createObjectURL(image);
   }, [image]);
+
+  const handleMessageDelete = async () => {
+    if (messageToDelete.length == 0) {
+      toast.error("Please Select Message to delete.");
+    }
+    await MessageDeleteRequest(
+      `api/message/delete/${selectedUser._id}`,
+      "PATCH",
+      {
+        messageIds: messageToDelete,
+        deleteType: "everyone",
+      },
+    ).then((result) => {
+      const data = result?.data;
+      if (result && result.success) {
+        if (data.success) {
+          //TODO:Currently taking directly ids from here, which is risky, later get it from backend
+          dispatch(deleteMessages(messageToDelete));
+          dispatch(
+            relativeLastMessage({
+              data: data.updateLast,
+              id: selectedUser._id,
+            }),
+          );
+          dispatch(clearMessageTrash());
+          toast.success("Successfully deleted Messages");
+        }
+      } else {
+        const errMsg = data?.message || "Failed to delete Message";
+        toast.error(errMsg);
+      }
+    });
+  };
+
   return !relativeLoading ? (
     toShow == "profile" ? (
       <Profile setToShow={setToShow} />
@@ -127,6 +170,15 @@ export default function Middle({
             </div>
           </div>
           <div className="flex items-center gap-4">
+            {messageToDelete.length > 0 && (
+              <div className="flex flex-nowrap gap-1 items-center-safe">
+                <strong>{messageToDelete.length}</strong>
+                <media.MdDelete
+                  className="text-xl text-red-600"
+                  onClick={handleMessageDelete}
+                />
+              </div>
+            )}
             <media.MdFullscreenExit
               className="text-3xl cursor-pointer"
               onClick={() => setBar((prev) => !prev)}
@@ -193,7 +245,7 @@ export default function Middle({
                 className="py-2 px-4 focus:outline-none w-full grow"
                 onChange={(e) => setMsg(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key == "Enter" && !loading) {
+                  if (e.key == "Enter" && !sendMessageLoading) {
                     sendMessage(selectedUser._id);
                   }
                 }}
@@ -215,11 +267,11 @@ export default function Middle({
               </div>
             </div>
             <button
-              disabled={loading}
+              disabled={sendMessageLoading}
               className="cursor-pointer rounded-full aspect-square p-2 bg-linear-to-tr from-primary to-secondary"
               onClick={() => sendMessage(selectedUser._id)}
             >
-              {loading ? (
+              {sendMessageLoading ? (
                 <p className="spinner"></p>
               ) : (
                 <media.MdSend className="text-xl aspect-square w-5 h-5 -rotate-40 pb-0.5 pl-0.5 text-black" />
