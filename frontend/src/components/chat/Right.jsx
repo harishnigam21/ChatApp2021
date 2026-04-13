@@ -4,7 +4,7 @@ import useApi from "../../hooks/Api";
 import { memo, useEffect } from "react";
 import Loading from "../common/Loading";
 import { setMedia } from "../../redux/slices/SelectedUserSlice";
-import ImageLoading from "./message/ImageLoading";
+import MediaLoading from "./message/MediaLoading";
 const Right = memo(function Right({ selectedUser, setInfo }) {
   const mediaItem = useSelector((store) => store.selectedUser.media);
   const { sendRequest, loading } = useApi();
@@ -60,7 +60,7 @@ const Right = memo(function Right({ selectedUser, setInfo }) {
                 key={`profile/media/${index}`}
                 className="w-30 rounded-md overflow-hidden"
               >
-                <ImageLoading msg={item} />
+                <MediaLoading msg={item} />
               </div>
             ))}
           </div>

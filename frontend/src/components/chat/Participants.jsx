@@ -78,9 +78,10 @@ export default function Participants({
                           )}
                         </div>
                       )}
-                    {relativeUsers.lastMessages[usr._id].image && (
-                      <media.FaImage className="text-xl" />
-                    )}
+                    {relativeUsers.lastMessages[usr._id].media &&
+                      relativeUsers.lastMessages[usr._id].media.length > 0 && (
+                        <media.TfiLayoutMediaCenterAlt className="text-xl" />
+                      )}
                     <small className="wrap-anywhere basis-full line-clamp-1">
                       {relativeUsers.lastMessages[usr._id].message}
                     </small>

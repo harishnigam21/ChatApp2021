@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { media } from "../../../assets/data/media";
 import { separateTime } from "../../../utils/getDate";
-import ImageLoading from "./ImageLoading";
+import MediaLoading from "./MediaLoading";
 import { useState } from "react";
 import {
   popMessageToDelete,
@@ -41,12 +41,12 @@ export default function SenderMessage({ msg, selectedUser }) {
           </label>
         ) : (
           <>
-            {msg.image && <ImageLoading msg={msg} />}
+            {msg.media && <MediaLoading msg={msg} />}
             <label
               htmlFor={`msg/${msg._id}`}
               className="relative pb-3 flex gap-2"
             >
-              <p htmlFor={`msg/${msg._id}`} className="wrap-anywhere p-1 pl-2">
+              <p htmlFor={`msg/${msg._id}`} className="wrap-anywhere pt-2 pl-2">
                 {msg.message}
               </p>
               <small className="absolute bottom-0 right-0 text-[10px] grow text-right flex flex-nowrap items-end justify-end gap-1 whitespace-nowrap">

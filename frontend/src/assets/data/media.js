@@ -28,6 +28,21 @@ import { MdDownload } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { CiTimer } from "react-icons/ci";
 import { IoBanOutline } from "react-icons/io5";
+import { GrAttachment } from "react-icons/gr";
+import { IoMdAdd } from "react-icons/io";
+import { IoDocumentText } from "react-icons/io5";
+import { FaVideo } from "react-icons/fa";
+import { FaCamera } from "react-icons/fa6";
+import { MdAudiotrack } from "react-icons/md";
+import { TfiLayoutMediaCenterAlt } from "react-icons/tfi";
+import { BsFillFilePdfFill } from "react-icons/bs";
+import { RiFileExcel2Fill } from "react-icons/ri";
+import { RiFileWord2Fill } from "react-icons/ri";
+import { FaFileZipper } from "react-icons/fa6";
+import { GoDotFill } from "react-icons/go";
+import { FaDownload } from "react-icons/fa6";
+import { MdFileDownload } from "react-icons/md";
+import { FaShareSquare } from "react-icons/fa";
 
 export const media = {
   MBG,
@@ -39,6 +54,7 @@ export const media = {
   app_preview,
   collabaration,
   HiDotsVertical,
+  GoDotFill,
   LuBadgeInfo,
   BsChevronCompactLeft,
   MdSend,
@@ -61,4 +77,18 @@ export const media = {
   MdDelete,
   CiTimer,
   IoBanOutline,
+  GrAttachment,
+  IoMdAdd,
+  IoDocumentText,
+  FaVideo,
+  FaCamera,
+  MdAudiotrack,
+  TfiLayoutMediaCenterAlt,
+  BsFillFilePdfFill,
+  RiFileExcel2Fill,
+  RiFileWord2Fill,
+  FaFileZipper,
+  FaDownload,
+  MdFileDownload,
+  FaShareSquare,
 };

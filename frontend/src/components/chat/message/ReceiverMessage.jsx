@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { media } from "../../../assets/data/media";
 import { separateTime } from "../../../utils/getDate";
-import ImageLoading from "./ImageLoading";
+import MediaLoading from "./MediaLoading";
 import {
   popMessageToDelete,
   pushMessageToDelete,
@@ -25,9 +25,9 @@ export default function ReceiverMessage({ msg }) {
       className={`flex justify-end-safe gap-2 ${checked && "bg-gray-600/30"} p-1 rounded-md transition-all`}
     >
       <article className="rounded-[10px_0px_10px_10px] flex flex-col bg-secondary/80 text-black min-w-30 max-w-[50%] wrap-anywhere me self-end overflow-hidden">
-        {msg.image && <ImageLoading msg={msg} />}
+        {msg.media && <MediaLoading msg={msg} />}
         <label htmlFor={`msg/${msg._id}`} className="relative flex gap-2 pb-3">
-          <div className="wrap-anywhere p-1 pl-2">
+          <div className="wrap-anywhere pt-2 pl-2">
             {msg.deletedForEveryone && !msg.message ? (
               <div className="flex items-center gap-2">
                 <media.CiTimer className="self-start mt-0.5" />{" "}
