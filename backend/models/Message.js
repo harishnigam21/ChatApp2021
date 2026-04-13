@@ -14,14 +14,30 @@ const messageSchema = mongoose.Schema(
     message: {
       type: String,
     },
-    image: {
-      type: String,
-      default: null,
-    },
-    thumbnail: {
-      type: String,
-      default: null,
-    },
+    media: [
+      {
+        url: {
+          type: String,
+        },
+        thumbnail: {
+          type: String,
+        },
+        public_id: {
+          type: String,
+        },
+        resource_type: {
+          type: String,
+        },
+        name: {
+          type: String,
+        },
+        lastModified: {
+          type: Number,
+        },
+        size: { type: Number },
+        tag: { type: String },
+      },
+    ],
     seen: {
       type: Boolean,
       default: false,

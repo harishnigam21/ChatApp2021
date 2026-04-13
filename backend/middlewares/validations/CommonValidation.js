@@ -42,7 +42,6 @@ export const validateInput = (type, value, valueType, res) => {
         );
       }
       break;
-
     case "image":
       const typeSize =
         valueType == "pic"

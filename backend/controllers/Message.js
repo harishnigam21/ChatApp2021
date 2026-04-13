@@ -38,18 +38,11 @@ export const getRelativeMessages = async (req, res) => {
               "$message",
             ],
           },
-          image: {
+          media: {
             $cond: [
               { $eq: ["$deletedForEveryone", true] },
               "$$REMOVE",
-              "$image",
-            ],
-          },
-          thumbnail: {
-            $cond: [
-              { $eq: ["$deletedForEveryone", true] },
-              "$$REMOVE",
-              "$thumbnail",
+              "$media",
             ],
           },
         },
@@ -116,8 +109,34 @@ export const getRelativeMessages = async (req, res) => {
   }
 };
 
+export const getMessageKey = async (req, res) => {
+  try {
+    const timestamp = Math.round(new Date().getTime() / 1000);
+    const toFolder = `${envList.ROOT}/user/chat/${req.user.id}/messages/${req.params.id}/media`;
+    const paramsToSign = {
+      timestamp: timestamp,
+      tags: "status_pending",
+      folder: toFolder,
+    };
+    const signature = cloudinary.utils.api_sign_request(
+      paramsToSign,
+      envList.CLOUDINARY_API_SECRET,
+    );
+    return res.status(200).json({
+      signature,
+      timestamp,
+      apiKey: envList.CLOUDINARY_API_KEY,
+      cloudName: envList.CLOUDINARY_CLOUD_NAME,
+      folder: toFolder,
+    });
+  } catch (error) {
+    console.error("Error from getMessageKey Controller : ", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 export const sendMessage = async (req, res) => {
-  const { image, message } = req.body;
+  const { media, message } = req.body;
   try {
     if (
       !req.user.following.includes(req.params.id) &&
@@ -128,26 +147,18 @@ export const sendMessage = async (req, res) => {
         message: "Person you are trying to chat is not in your connection",
       });
     }
-    let imageUrl = null;
-    let thumbnail = null;
-    if (image) {
-      const upload = await cloudinary.uploader.upload(image, {
-        folder: `${envList.ROOT}/user/chat/${req.user.id}/messages/${req.params.id}/image`,
-      });
-      imageUrl = upload.secure_url;
-      thumbnail = upload.secure_url.replace(
-        "/upload/",
-        "/upload/e_blur:1000,q_10,w_200/",
-      );
-    }
     const newMessage = await Message.create({
       sender_id: req.user.id,
       receiver_id: req.params.id,
       message: message || "",
-      image: imageUrl,
-      thumbnail: thumbnail,
+      media: media || [],
     });
-
+    if (media && media.length > 0) {
+      const tagPromises = media.map((file) =>
+        cloudinary.uploader.remove_tag("status_pending", [file.public_id]),
+      );
+      await Promise.all(tagPromises);
+    }
     const receiverSocketId = userSocketMap[req.params.id];
     if (receiverSocketId) {
       io.to(receiverSocketId).emit("newMessage", newMessage);
