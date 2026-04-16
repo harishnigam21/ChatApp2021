@@ -28,7 +28,7 @@ export default function SenderMessage({ msg, selectedUser }) {
     <section
       className={`flex gap-2 ${checked && "bg-gray-600/30"} p-1 rounded-md transition-all`}
     >
-      <article className=" rounded-[0px_10px_10px_10px] flex flex-col bg-secondary/80 text-black min-w-30 max-w-[50%] wrap-anywhere you self-start overflow-hidden">
+      <article className=" rounded-[0px_10px_10px_10px] flex flex-col bg-secondary/95 p-1 text-black min-w-30 max-w-[50%] wrap-anywhere you self-start overflow-hidden">
         {msg.deletedForEveryone ? (
           <label
             htmlFor={`msg/${msg._id}`}
@@ -42,14 +42,11 @@ export default function SenderMessage({ msg, selectedUser }) {
         ) : (
           <>
             {msg.media && <MediaLoading msg={msg} />}
-            <label
-              htmlFor={`msg/${msg._id}`}
-              className="relative pb-3 flex gap-2"
-            >
-              <p htmlFor={`msg/${msg._id}`} className="wrap-anywhere pt-2 pl-2">
+            <label htmlFor={`msg/${msg._id}`} className="">
+              <p htmlFor={`msg/${msg._id}`} className="wrap-anywhere pl-2">
                 {msg.message}
               </p>
-              <small className="absolute bottom-0 right-0 text-[10px] grow text-right flex flex-nowrap items-end justify-end gap-1 whitespace-nowrap">
+              <small className="float-end flex gap-1 text-[10px]">
                 {separateTime(msg.createdAt)}
                 {msg.seen ? (
                   <media.BiCheckDouble className="text-base text-blue-700" />

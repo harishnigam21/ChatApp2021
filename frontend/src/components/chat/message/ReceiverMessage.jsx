@@ -24,10 +24,10 @@ export default function ReceiverMessage({ msg }) {
     <section
       className={`flex justify-end-safe gap-2 ${checked && "bg-gray-600/30"} p-1 rounded-md transition-all`}
     >
-      <article className="rounded-[10px_0px_10px_10px] flex flex-col bg-secondary/80 text-black min-w-30 max-w-[50%] wrap-anywhere me self-end overflow-hidden">
+      <article className="rounded-[10px_0px_10px_10px] flex flex-col bg-cyan-950/95 p-1 text-white min-w-30 max-w-[50%] wrap-anywhere me self-end overflow-hidden">
         {msg.media && <MediaLoading msg={msg} />}
-        <label htmlFor={`msg/${msg._id}`} className="relative flex gap-2 pb-3">
-          <div className="wrap-anywhere pt-2 pl-2">
+        <label htmlFor={`msg/${msg._id}`} className="">
+          <div className="wrap-anywhere pl-2">
             {msg.deletedForEveryone && !msg.message ? (
               <div className="flex items-center gap-2">
                 <media.CiTimer className="self-start mt-0.5" />{" "}
@@ -39,7 +39,7 @@ export default function ReceiverMessage({ msg }) {
               msg.message
             )}
           </div>
-          <small className="absolute bottom-0 right-0 text-[10px] grow text-right flex flex-nowrap items-end justify-end gap-1 pr-1 whitespace-nowrap">
+          <small className="float-end text-[10px]">
             {separateTime(msg.createdAt)}{" "}
           </small>
         </label>
